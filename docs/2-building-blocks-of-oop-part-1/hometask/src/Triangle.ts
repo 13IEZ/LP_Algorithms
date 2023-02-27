@@ -24,3 +24,4 @@ export class Triangle extends Shape {
     return `Triangle[v1=${this.points[0].toString()},v2=${this.points[1].toString()},v3=${this.points[2].toString()}]`;
   }
 }
+// hometask_1

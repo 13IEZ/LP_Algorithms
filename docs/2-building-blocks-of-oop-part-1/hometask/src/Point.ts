@@ -32,3 +32,4 @@ export class Point {
     return Math.sqrt(powX + powY);
   }
 }
+// hometask_1

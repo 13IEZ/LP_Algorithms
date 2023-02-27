@@ -32,3 +32,4 @@ export abstract class Shape {
     return total;
   }
 }
+// hometask_1
