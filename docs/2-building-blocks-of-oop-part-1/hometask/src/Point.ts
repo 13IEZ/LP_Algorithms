@@ -1,35 +1,29 @@
-export interface IPoint {
-  x: number;
-  y: number
-}
-
 export class Point {
-  x = 0;
-  y = 0;
+  x: number;
+  y: number;
 
-  constructor(x = 0, y = 0) {
-    this.x = x;
-    this.y = y;
+  constructor();
+  constructor(x: number, y: number);
+  constructor(x?: number, y?: number) {
+    this.x = x ?? 0;
+    this.y = y ?? 0;
   }
 
-  toString() {
+  toString(): string {
     return `(${this.x}, ${this.y})`;
   }
 
-  distance(a?: number | IPoint, b?: number): number {
-    let newX = 0;
-    let newY = 0;
-    if (Number.isInteger(a)) newX = a as number;
-    else if (a instanceof Point) {
-      newX = a.x;
-      newY = a.y;
+  calculate(x: number, y: number): number {
+    return Math.sqrt(Math.pow((x ?? 0) - this.x, 2) + Math.pow((y ?? 0) - this.y, 2));
+  }
+
+  distance(): number;
+  distance(other: Point): number;
+  distance(a: number, b: number): number;
+  distance(a?: number | Point, b?: number): number {
+    if (a instanceof Point) {
+      return this.calculate(a.x, a.y);
     }
-
-    if (Number.isInteger(b)) newY = b as number;
-
-    const powX = Math.pow(newX - this.x, 2);
-    const powY = Math.pow(newY - this.y, 2);
-    return Math.sqrt(powX + powY);
+    return this.calculate(a, b);
   }
 }
-// hometask_1
