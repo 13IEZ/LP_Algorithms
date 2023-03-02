@@ -13,7 +13,8 @@ export class Triangle extends Shape {
     const side3 = this.points[2].distance(this.points[0]);
     if (side1.toFixed(1) === side2.toFixed(1) && side2.toFixed(1) === side3.toFixed(1)) {
       return "equilateral triangle";
-    } else if (side1 === side2 || side1 === side3 || side2 === side3) {
+    }
+    if (side1 === side2 || side1 === side3 || side2 === side3) {
       return "isosceles triangle";
     }
     return "scalene triangle";
