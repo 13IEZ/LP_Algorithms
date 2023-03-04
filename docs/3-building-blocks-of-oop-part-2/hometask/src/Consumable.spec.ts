@@ -1,19 +1,17 @@
-// @ts-nocheck
-
 import { Consumable } from "./Consumable";
 
-// @ts-expect-error
 new Consumable("bread", 1, 1);
 
 class ConsumableWithImplementation extends Consumable {}
 
 describe("Consumable", () => {
   it("should not be spoiled", () => {
-    expect(new ConsumableWithImplementation("bread", 1, 1).isSpoiled()).toBeFalsy();
+    //should be bugged, isSpoiled = variables not method
+    expect(new ConsumableWithImplementation("bread", 1, 1).isSpoiled).toBeFalsy();
   });
 
   it("should be spoiled", () => {
-    expect(new ConsumableWithImplementation("bread", 1, 1, true).isSpoiled()).toBeTruthy();
+    expect(new ConsumableWithImplementation("bread", 1, 1, true).isSpoiled).toBeTruthy();
   });
 
   describe("use()", () => {

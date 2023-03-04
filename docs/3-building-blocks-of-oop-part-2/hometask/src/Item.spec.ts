@@ -1,8 +1,5 @@
-// @ts-nocheck
-
 import { Item } from "./Item";
 
-// @ts-expect-error
 new Item("ring", 2, 1);
 
 class ItemWithImplementation extends Item {
@@ -67,6 +64,6 @@ describe("Item", () => {
   });
 
   it("`toString()` should work as expected", () => {
-    expect(new ItemWithImplementation("ring", 1, 1).toString()).toEqual("ring − Value: 1.00, Weight: 1.00");
+    expect(new ItemWithImplementation("ring", 1, 1).toString()).toEqual("ring - Value: 1.00, Weight: 1.00");
   });
 });
