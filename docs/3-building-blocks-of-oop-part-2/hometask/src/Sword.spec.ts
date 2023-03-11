@@ -1,5 +1,3 @@
-// @ts-nocheck
-
 import { Sword } from "./Sword";
 
 describe("Sword", () => {
@@ -20,13 +18,13 @@ describe("Sword", () => {
       sword.polish();
       sword.polish();
 
-      expect(sword.toString()).toEqual("sword − Value: 1.00, Weight: 1.00, Damage: 1.20, Durability: 100.00%");
+      expect(sword.toString()).toEqual("sword - Value: 1.00, Weight: 1.00, Damage: 1.20, Durability: 100.00%");
       sword.polish();
 
-      expect(sword.toString()).toEqual("sword − Value: 1.00, Weight: 1.00, Damage: 1.25, Durability: 100.00%");
+      expect(sword.toString()).toEqual("sword - Value: 1.00, Weight: 1.00, Damage: 1.25, Durability: 100.00%");
 
       sword.polish();
-      expect(sword.toString()).toEqual("sword − Value: 1.00, Weight: 1.00, Damage: 1.25, Durability: 100.00%");
+      expect(sword.toString()).toEqual("sword - Value: 1.00, Weight: 1.00, Damage: 1.25, Durability: 100.00%");
     });
   });
 });
