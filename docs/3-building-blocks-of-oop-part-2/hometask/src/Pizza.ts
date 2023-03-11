@@ -1,7 +1,7 @@
 import { Consumable } from "./Consumable";
 
 export class Pizza extends Consumable {
-  readonly numberOfSlices: number = 0;
+  readonly numberOfSlices;
   numberOfEatenSlices: number = 0;
 
   constructor(value: number, weight: number, numberOfSlices: number, isSpoiled?: boolean) {

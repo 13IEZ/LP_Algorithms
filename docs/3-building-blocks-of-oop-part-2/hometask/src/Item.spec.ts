@@ -1,5 +1,6 @@
 import { Item } from "./Item";
 
+// @ts-ignore
 new Item("ring", 2, 1);
 
 class ItemWithImplementation extends Item {

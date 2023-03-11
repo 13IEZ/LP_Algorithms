@@ -14,13 +14,13 @@ describe("Bow", () => {
   describe("polish()", () => {
     it("should work correctly", () => {
       bow.polish();
-      expect(bow.toString()).toEqual("bow − Value: 1.00, Weight: 1.00, Damage: 100.00, Durability: 95.00%");
+      expect(bow.toString()).toEqual("bow - Value: 1.00, Weight: 1.00, Damage: 100.00, Durability: 95.00%");
 
       bow.polish();
-      expect(bow.toString()).toEqual("bow − Value: 1.00, Weight: 1.00, Damage: 100.00, Durability: 100.00%");
+      expect(bow.toString()).toEqual("bow - Value: 1.00, Weight: 1.00, Damage: 100.00, Durability: 100.00%");
 
       bow.polish();
-      expect(bow.toString()).toEqual("bow − Value: 1.00, Weight: 1.00, Damage: 100.00, Durability: 100.00%");
+      expect(bow.toString()).toEqual("bow - Value: 1.00, Weight: 1.00, Damage: 100.00, Durability: 100.00%");
     });
   });
 });

@@ -30,20 +30,20 @@ describe("Weapon", () => {
   });
 
   it("should have proper description for just created weapon", () => {
-    expect(weapon.toString()).toEqual("bow − Value: 2.00, Weight: 1.00, Damage: 1.00, Durability: 50.00%");
+    expect(weapon.toString()).toEqual("bow - Value: 2.00, Weight: 1.00, Damage: 1.00, Durability: 50.00%");
   });
 
   describe("use()", () => {
     it("should return proper string for weapon that does not break", () => {
       expect(weapon.use()).toEqual("You use the bow, dealing 0.05 points of damage.");
-      expect(weapon.toString()).toEqual("bow − Value: 2.00, Weight: 1.00, Damage: 1.00, Durability: 45.00%");
+      expect(weapon.toString()).toEqual("bow - Value: 2.00, Weight: 1.00, Damage: 1.00, Durability: 45.00%");
     });
 
     it("should return proper string for weapon that breaks", () => {
       weapon = new WeaponWithImplementation("bow", 1, 0.05, 2, 1);
 
       expect(weapon.use()).toEqual("You use the bow, dealing 0.05 points of damage.\nThe bow breaks.");
-      expect(weapon.toString()).toEqual("bow − Value: 2.00, Weight: 1.00, Damage: 1.00, Durability: 0.00%");
+      expect(weapon.toString()).toEqual("bow - Value: 2.00, Weight: 1.00, Damage: 1.00, Durability: 0.00%");
     });
 
     it("should return proper string for weapon that is already broken", () => {
@@ -55,7 +55,7 @@ describe("Weapon", () => {
 
       expect(weapon.use()).toEqual("You can't use the bow, it is broken.");
       expect(getEffectiveDurabilitySpy).not.toHaveBeenCalled();
-      expect(weapon.toString()).toEqual("bow − Value: 2.00, Weight: 1.00, Damage: 1.00, Durability: 0.00%");
+      expect(weapon.toString()).toEqual("bow - Value: 2.00, Weight: 1.00, Damage: 1.00, Durability: 0.00%");
     });
   });
 });

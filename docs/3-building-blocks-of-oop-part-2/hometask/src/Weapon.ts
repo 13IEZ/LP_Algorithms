@@ -1,7 +1,7 @@
 import { Item } from "./Item";
 
 export abstract class Weapon extends Item {
-  readonly MODIFIER_CHANGE_RATE: number = 0.05;
+  static readonly MODIFIER_CHANGE_RATE: number = 0.05;
 
   baseDamage: number;
   damageModifier: number;
@@ -17,31 +17,29 @@ export abstract class Weapon extends Item {
   }
 
   use(): string {
-    const isWillBeBroke = this.baseDurability - this.MODIFIER_CHANGE_RATE < this.MODIFIER_CHANGE_RATE;
-    const isBroken = this.baseDurability < this.MODIFIER_CHANGE_RATE;
-    const isActive = this.baseDurability > this.MODIFIER_CHANGE_RATE;
+    const isWillBeBroke = this.baseDurability - Weapon.MODIFIER_CHANGE_RATE < Weapon.MODIFIER_CHANGE_RATE;
+    const isBroken = this.baseDurability < Weapon.MODIFIER_CHANGE_RATE;
+    const isActive = this.baseDurability > Weapon.MODIFIER_CHANGE_RATE;
 
     if(isBroken) {
       return `You can't use the ${this.name}, it is broken.`;
     }
 
     if(isWillBeBroke) {
-      this.baseDurability -= this.MODIFIER_CHANGE_RATE;
-      return `You use the ${this.name}, dealing ${this.MODIFIER_CHANGE_RATE} points of damage.\nThe ${this.name} breaks.`
+      this.baseDurability -= Weapon.MODIFIER_CHANGE_RATE;
+      return `You use the ${this.name}, dealing ${Weapon.MODIFIER_CHANGE_RATE} points of damage.\nThe ${this.name} breaks.`
     }
 
     if(isActive) {
-      this.baseDurability -= this.MODIFIER_CHANGE_RATE;
-      return `You use the ${this.name}, dealing ${this.MODIFIER_CHANGE_RATE} points of damage.`;
+      this.baseDurability -= Weapon.MODIFIER_CHANGE_RATE;
+      return `You use the ${this.name}, dealing ${Weapon.MODIFIER_CHANGE_RATE} points of damage.`;
     }
   }
-
-  polish(): void {}
 
   toString(): string {
     const damage = this.getEffectiveDamage().toFixed(2);
     const durability = (this.getEffectiveDurability() * 100).toFixed(2);
-    return `${this.name} − Value: ${this.value.toFixed(2)}, Weight: ${this.weight.toFixed(2)}, Damage: ${damage}, Durability: ${durability}%`;
+    return `${super.toString()}, Damage: ${damage}, Durability: ${durability}%`;
   }
 
   getEffectiveDamage(): number {

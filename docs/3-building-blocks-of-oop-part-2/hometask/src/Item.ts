@@ -1,6 +1,6 @@
 import { Comparable } from "./Comparable";
 
-export class Item implements Comparable<Item> {
+export abstract class Item implements Comparable<Item> {
   readonly name: string;
   readonly id: number;
 
@@ -26,16 +26,15 @@ export class Item implements Comparable<Item> {
     return this.id;
   }
 
-  use(): void {}
+  abstract use();
 
   toString(): string {
     return `${this.name} - Value: ${this.value.toFixed(2)}, Weight: ${this.weight.toFixed(2)}`
   }
 
   compareTo(other: Item): number {
-    if(this.value > other.value) return 1;
-    if(this.value < other.value) return -1;
-    if(this.value === other.value && this.name !== other.name) return -1;
+    if(this.value !== other.value) return this.value > other.value ? 1 : -1;
+    if(this.name !== other.name) return this.name.localeCompare(other.name);
     if(this.name === other.name && this.value === other.value) return 0;
   }
 }
