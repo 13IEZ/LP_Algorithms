@@ -17,21 +17,19 @@ export abstract class Weapon extends Item {
   }
 
   use(): string {
-    const isWillBeBroke = this.baseDurability - Weapon.MODIFIER_CHANGE_RATE < Weapon.MODIFIER_CHANGE_RATE;
-    const isBroken = this.baseDurability < Weapon.MODIFIER_CHANGE_RATE;
-    const isActive = this.baseDurability > Weapon.MODIFIER_CHANGE_RATE;
+    const isWillBeBroken = this.baseDurability - Weapon.MODIFIER_CHANGE_RATE <= 0;
     const defaultString = `You use the ${this.name}, dealing ${Weapon.MODIFIER_CHANGE_RATE} points of damage.`;
 
-    if(isBroken) {
+    if(this.baseDurability <= 0) {
       return `You can't use the ${this.name}, it is broken.`;
     }
 
-    if(isWillBeBroke) {
+    if(isWillBeBroken) {
       this.baseDurability -= Weapon.MODIFIER_CHANGE_RATE;
       return `${defaultString}\nThe ${this.name} breaks.`
     }
 
-    if(isActive) {
+    if(this.baseDurability > 0) {
       this.baseDurability -= Weapon.MODIFIER_CHANGE_RATE;
       return defaultString;
     }
