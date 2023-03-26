@@ -24,7 +24,7 @@ describe('utils', () => {
     const f = flow(
       (x: string) => x.repeat(2), // 'word,word,'
       (x) => x.split(','), // ['word', 'word', '']
-      (x) => x.map(a => a.length), // [4, 4, 0]
+      (x: string[]) => x.map(a => a.length), // [4, 4, 0]
       (x) => x.reduce((sum, a) => sum + a, 0), // 8
     );
 
