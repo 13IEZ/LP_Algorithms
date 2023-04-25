@@ -7,6 +7,7 @@
     FromZipCode: string;
     ToAddress: string;
     ToZipCode: string;
+
     constructor(Weight: number, FromAddress: string, FromZipCode: string, ToAddress: string, ToZipCode: string) {
       this.ShipmentID = Shipment.ShipmentIDCounter + 1;
       ++Shipment.ShipmentIDCounter;
@@ -17,25 +18,37 @@
       this.ToZipCode = ToZipCode;
     }
 
+    getWeightRates() {
+      const rates = new Map();
+      rates.set('1', { upToWeight: 0.39, rate: 0.25, overRate: 10, isWeightMultiplier: false });
+      rates.set('2', { upToWeight: 0.39, rate: 0.25, overRate: 10, isWeightMultiplier: false });
+      rates.set('3', { upToWeight: 0.39, rate: 0.25, overRate: 10, isWeightMultiplier: false });
+      rates.set('4', { upToWeight: 0.42, rate: 0.20, overRate: 0, isWeightMultiplier: false });
+      rates.set('5', { upToWeight: 0.42, rate: 0.20, overRate: 0, isWeightMultiplier: false });
+      rates.set('6', { upToWeight: 0.42, rate: 0.20, overRate: 0, isWeightMultiplier: false });
+      rates.set('7', { upToWeight: 0.51, rate: 0.19, overRate: 0.02, isWeightMultiplier: true });
+      rates.set('8', { upToWeight: 0.51, rate: 0.19, overRate: 0.02, isWeightMultiplier: true });
+      rates.set('9', { upToWeight: 0.51, rate: 0.19, overRate: 0.02, isWeightMultiplier: true });
+      return rates;
+    }
+
     calculateShipmentCost(): number {
+      const weightRates = this.getWeightRates();
       const zipCode: string = this.FromZipCode.split('')[0];
+      const rates = weightRates.has(zipCode) ? weightRates.get(zipCode) : weightRates.get('1');
+      let cost: number = 0;
 
       if(this.Weight <= 15) {
-        if(['1','2','3'].includes(zipCode)) return this.Weight * 0.39;
-        else if(['4','5','6'].includes(zipCode)) return this.Weight * 0.42;
-        else if(['7','8','9'].includes(zipCode)) return this.Weight * 0.51;
-        else return this.Weight * 0.39;
+        cost = this.Weight * rates.upToWeight;
       } else if(this.Weight > 15 && this.Weight <= 160) {
-        if(['1','2','3'].includes(zipCode)) return this.Weight * 0.25;
-        else if(['4','5','6'].includes(zipCode)) return this.Weight * 0.20;
-        else if(['7','8','9'].includes(zipCode)) return this.Weight * 0.19;
-        else return this.Weight * 0.25;
+        cost = this.Weight * rates.rate;
       } else {
-        if(['1','2','3'].includes(zipCode)) return this.Weight * 0.25 + 10;
-        else if(['4','5','6'].includes(zipCode)) return this.Weight * 0.20;
-        else if(['7','8','9'].includes(zipCode)) return this.Weight * 0.19 + this.Weight * 0.02;
-        else return this.Weight * this.Weight * 0.25 + 10;
+        cost = rates.isWeightMultiplier
+          ? this.Weight * rates.rate + this.Weight * rates.overRate
+          : this.Weight * rates.rate + rates.overRate;
       }
+
+      return cost;
     }
     ship(): string {
       const cost: number = this.calculateShipmentCost();
@@ -77,21 +90,21 @@ class Shipper {
 }
 
 class AirEastShipper extends Shipper {
-  static cost = 0.39;
+  static readonly cost = 0.39;
   constructor(shipment: Shipment) {
     super(shipment, AirEastShipper.cost);
   }
 }
 
 class ChicagoSprintShipper extends Shipper {
-  static cost = 0.42;
+  static readonly cost = 0.42;
   constructor(shipment: Shipment) {
     super(shipment, ChicagoSprintShipper.cost);
   }
 }
 
 class PacificParcelShipper extends Shipper {
-  static cost = 0.51;
+  static readonly cost = 0.51;
   constructor(shipment: Shipment) {
     super(shipment, PacificParcelShipper.cost);
   }
@@ -151,6 +164,10 @@ class ShipmentDecorator implements Shipment {
 
   getInstance(): Shipment {
     return this.shipment.getInstance();
+  }
+
+  getWeightRates() {
+    return this.shipment.getWeightRates();
   }
 
   calculateShipmentCost(): number {
