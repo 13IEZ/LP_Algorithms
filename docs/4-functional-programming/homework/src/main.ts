@@ -10,7 +10,9 @@ type Response<R> = Promise<Either<string, R>>
 const getExecutor = (): Response<ExecutorUser> => fromPromise(fetchExecutor());
 const getClients = (): Response<Array<ClientUser>> => {
   return fromPromise(fetchClient()).then((users) => {
-    return isRight(users) ? {...users, right: users.right.map(item => ({...item, demands: fromNullable(item.demands)}))} : users;
+    return isRight(users)
+      ? {...users, right: users.right.map(item => ({...item, demands: fromNullable(item.demands)}))}
+      : users;
   }).catch((err) => err);
 };
 
@@ -28,7 +30,9 @@ const calculateDistance = (executorPosition: Position, clientPosition: Position)
   return Math.sqrt(Math.pow(clientPosition.x - executorPosition.x, 2) + Math.pow(clientPosition.y - executorPosition.y, 2)).toFixed(3);
 }
 const sortByParameter = (clients: Array<ClientUser>, executor: ExecutorUser, parameter: SortBy) => {
-  if (parameter === SortBy.reward) return clients.sort((x, y) => ordNumber.compare(x.reward, y.reward)).reverse();
+  if (parameter === SortBy.reward) {
+    return clients.sort((x, y) => ordNumber.compare(x.reward, y.reward)).reverse();
+  }
 
   return clients.sort((x, y) => ordNumber.compare(Number(calculateDistance(executor.position, x.position)), Number(calculateDistance(executor.position, y.position))));
 }
