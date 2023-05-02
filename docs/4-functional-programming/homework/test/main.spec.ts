@@ -33,8 +33,8 @@ describe('Main file', () => {
       expect(show(SortBy.reward)(clients)(executor)).toStrictEqual(right(`This executor meets the demands of only 3 out of 4 clients
 
 Available clients sorted by highest reward:
-name: Philip, distance: 30.364, reward: 600
-name: John, distance: 21.378, reward: 250
+name: Philip, distance: 30.364, reward: 600,
+name: John, distance: 21.378, reward: 250,
 name: Gregor, distance: 20.025, reward: 230`));
     });
 
@@ -42,12 +42,12 @@ name: Gregor, distance: 20.025, reward: 230`));
       expect(show(SortBy.distance)(clients)(executor)).toStrictEqual(right(`This executor meets the demands of only 3 out of 4 clients
 
 Available clients sorted by distance to executor:
-name: Gregor, distance: 20.025, reward: 230
-name: John, distance: 21.378, reward: 250
+name: Gregor, distance: 20.025, reward: 230,
+name: John, distance: 21.378, reward: 250,
 name: Philip, distance: 30.364, reward: 600`));
     });
 
-    it('show returns left with the message when cannot find clients', () => {
+    it('show returns left with the message when cannot find clients 1', () => {
       const clientsWithoutNone = clients.slice(0, 2);
       const executorWithoutPossibilities = { ...executor, possibilities: [] };
       expect(show(SortBy.reward)(clientsWithoutNone)(executorWithoutPossibilities)).toStrictEqual(left(`This executor cannot meet the demands of any client!`));
