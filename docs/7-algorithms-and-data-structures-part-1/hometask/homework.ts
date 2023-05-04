@@ -84,36 +84,65 @@ class DijkstraImpl<T> implements Dijkstra<T> {
 
   calculatedShortestPath(vertex1: T, vertex2: T): Path {
     const vertices = this.graph.getVertices();
-    const isVertexes = vertex1 instanceof Vertex<string> && vertex2 instanceof Vertex<string>
-    const result: Path = {path: [], distance: 0};
-    const remoteLinks: Set<T> = new Set();
+    const infinityPath = { path: [], distance: Infinity };
 
-    vertices.forEach((value, key) => {
-      value.has(vertex1 || vertex2) && remoteLinks.add(key);
-    });
-
-    if (remoteLinks.size < 2) {
-      result.distance = Infinity;
-      return result;
+    if (!vertices.has(vertex1) || !vertices.has(vertex2)) {
+      return infinityPath;
     }
 
-    remoteLinks.forEach((valueRemote) => {
-      const isVertex = isVertexes && valueRemote instanceof Vertex<string>
-      let iteratedDistance: number = 0;
-      iteratedDistance += vertices.get(valueRemote)?.get(vertex1)!;
-      iteratedDistance += vertices.get(valueRemote)?.get(vertex2)!;
-      if (!Number.isInteger(iteratedDistance)) {
-        result.distance = Infinity;
-        return result;
-      }
+    const distances: Map<T, number> = new Map();
+    const visited: Set<T> = new Set();
+    const previous: Map<T, T> = new Map();
+    const pq: Array<[T, number]> = [];
 
-      if (((!result.distance) || iteratedDistance < result.distance) && isVertex) {
-        result.distance = iteratedDistance;
-        result.path = [vertex1.value, valueRemote.value, vertex2.value];
+    vertices.forEach((edges, vertex) => {
+      if (vertex === vertex1) {
+        distances.set(vertex, 0);
+        pq.push([vertex, 0]);
+      } else {
+        distances.set(vertex, Infinity);
       }
     });
 
-    return result;
+    while (pq.length) {
+      const [current] = pq.shift()!;
+      visited.add(current);
+
+      if (current === vertex2 && vertex2 instanceof Vertex<string>) {
+        const path: T[] = [vertex2.value];
+        let node: T | undefined = previous.get(vertex2);
+
+        while (node && node instanceof Vertex<string>) {
+          path.push(node.value);
+          node = previous.get(node);
+        }
+        return { path: path.reverse().map(String), distance: distances.get(vertex2)! };
+      }
+
+      const edges = vertices.get(current)!;
+      edges.forEach((weight, neighbor) => {
+        if (!visited.has(neighbor)) {
+          const alt = distances.get(current)! + weight;
+
+          if (alt < distances.get(neighbor)!) {
+            distances.set(neighbor, alt);
+            previous.set(neighbor, current);
+
+            const index = pq.findIndex(([vertex]) => vertex === neighbor);
+
+            if (index === -1) {
+              pq.push([neighbor, alt]);
+            } else {
+              pq.splice(index, 1, [neighbor, alt]);
+            }
+
+            pq.sort((a, b) => a[1] - b[1]);
+          }
+        }
+      });
+    }
+
+    return infinityPath;
   }
 
   findShortestPath(vertex1: T, vertex2: T): Path {
@@ -141,18 +170,50 @@ class DijkstraImpl<T> implements Dijkstra<T> {
 
   findAllShortestPaths(vertex: T): Record<string, Path> {
     const vertices = this.graph.getVertices();
-    const vertex2Lists: Set<T> = new Set();
+    const distances: Map<T, number> = new Map();
+    const previousNodes: Map<T, T | null> = new Map();
+    const queue: T[] = [];
+
+    vertices.forEach((_, v) => {
+      distances.set(v, Infinity);
+      previousNodes.set(v, null);
+      queue.push(v);
+    });
+    distances.set(vertex, 0);
+
+    while (queue.length > 0) {
+      const currentNode: T = queue.reduce((minNode, node) => (
+        distances.get(node)! < distances.get(minNode)! ? node : minNode
+      ));
+
+      queue.splice(queue.indexOf(currentNode), 1);
+
+      vertices.get(currentNode)?.forEach((weight, neighbor) => {
+        const altDistance = distances.get(currentNode)! + weight;
+        if (altDistance < distances.get(neighbor)!) {
+          distances.set(neighbor, altDistance);
+          previousNodes.set(neighbor, currentNode);
+        }
+      });
+    }
+
     const result: Record<string, Path> = {};
     vertices.forEach((value, key) => {
-      key !== vertex && vertex2Lists.add(key);
-    });
-
-    vertex2Lists.forEach((vertex2) => {
-      const isVertex = vertex2 instanceof Vertex<string>;
-      if (isVertex) {
-        result[vertex2.value] = this.findShortestPath(vertex, vertex2);
+      const path: T[] = [];
+      let current = key;
+      while (previousNodes.get(current) !== null) {
+        path.unshift(current);
+        current = previousNodes.get(current)!;
       }
-
+      if (path.length > 0 && key instanceof Vertex<string>) {
+        path.unshift(current);
+        result[key.value] = {
+          distance: distances.get(key)!,
+          path: path.map(vert => {
+            return vert instanceof Vertex<string> && vert.value;
+          }),
+        };
+      }
     });
 
     return result;
@@ -170,20 +231,47 @@ const vertex5 = vertices[4];
 const vertex6 = vertices[5];
 
 
-console.log(dijkstra.findShortestPath(vertex1, vertex5));
-console.log(dijkstra.findShortestPath(vertex4, vertex3));
-console.log(dijkstra.findShortestPath(vertex3, vertex4));
-console.log(dijkstra.findShortestPath(vertex1, vertex1));
-console.log(dijkstra.findShortestPath(vertex1, vertex2));
-console.log(dijkstra.findShortestPath(vertex2, vertex4));
-console.log(dijkstra.findShortestPath(vertex2, vertex3));
-console.log(dijkstra.findShortestPath(vertex2, vertex5));
-console.log(dijkstra.findShortestPath(vertex5, vertex2));
-console.log(dijkstra.findShortestPath(vertex5, vertex5));
-console.log(dijkstra.findShortestPath(vertex6, vertex5));
-console.log(dijkstra.findShortestPath(vertex3, vertex1));
-console.log(dijkstra.findShortestPath(vertex3, vertex2));
-console.log(dijkstra.findShortestPath(vertex2, vertex1));
+// console.log(dijkstra.findShortestPath(vertex1, vertex5));
+// console.log(dijkstra.findShortestPath(vertex4, vertex3));
+// console.log(dijkstra.findShortestPath(vertex3, vertex4));
+// console.log(dijkstra.findShortestPath(vertex1, vertex1));
+// console.log(dijkstra.findShortestPath(vertex1, vertex2));
+// console.log(dijkstra.findShortestPath(vertex2, vertex4));
+// console.log(dijkstra.findShortestPath(vertex2, vertex3));
+// console.log(dijkstra.findShortestPath(vertex2, vertex5));
+// console.log(dijkstra.findShortestPath(vertex5, vertex2));
+// console.log(dijkstra.findShortestPath(vertex5, vertex5));
+// console.log(dijkstra.findShortestPath(vertex6, vertex5));
+// console.log(dijkstra.findShortestPath(vertex3, vertex1));
+// console.log(dijkstra.findShortestPath(vertex3, vertex2));
+// console.log(dijkstra.findShortestPath(vertex2, vertex1));
 
-console.log(dijkstra.findAllShortestPaths(vertex4));
-console.log(dijkstra.findAllShortestPaths(vertex1));
+// console.log(dijkstra.findAllShortestPaths(vertex4));
+// console.log(dijkstra.findAllShortestPaths(vertex1));
+
+const vertices2 = [  new Vertex('1'),  new Vertex('2'),  new Vertex('3'),  new Vertex('4'),  new Vertex('5'), new Vertex('6')];
+const edges2 = [
+  new Edge(vertices2[0], vertices2[1], 3),
+  new Edge(vertices2[0], vertices2[5], 4),
+  new Edge(vertices2[0], vertices2[2], 10),
+  new Edge(vertices2[1], vertices2[2], 1),
+  new Edge(vertices2[2], vertices2[3], 2),
+  new Edge(vertices2[3], vertices2[4], 7),
+  new Edge(vertices2[4], vertices2[5], 8),
+  new Edge(vertices2[5], vertices2[3], 11),
+];
+const graph2: WeightedGraph<Vertex<string>> = new WeightedGraphImpl<Vertex<string>>();
+vertices2.forEach(verticle => graph2.addVertex(verticle));
+edges2.forEach(edge => graph2.addEdge(edge.from, edge.to, edge.weight));
+const dijkstra2: Dijkstra<Vertex<string>> = new DijkstraImpl<Vertex<string>>(graph2);
+const vertexGraph1 = vertices2[0];
+const vertexGraph2 = vertices2[1];
+const vertexGraph3 = vertices2[2];
+const vertexGraph4 = vertices2[3];
+const vertexGraph5 = vertices2[4];
+const vertexGraph6 = vertices2[5];
+const vertexGraph7 = vertices2[6];
+
+console.log(dijkstra2.findShortestPath(vertexGraph1, vertexGraph4));
+console.log(dijkstra2.findShortestPath(vertexGraph1, vertexGraph5));
+console.log(dijkstra2.findAllShortestPaths(vertexGraph2));
