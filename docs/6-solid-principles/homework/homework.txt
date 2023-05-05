@@ -1,0 +1,37 @@
+https://github.com/epam/UUI
+
+Identify SOLID Principles:
+Single Responsibility Principle:
+https://github.com/13IEZ/UUI/blob/main/app/src/analyticsEvents/listeners/AmplitudeListener.ts
+
+Open / Closed Principle:
+он же подходит под принцип https://github.com/13IEZ/UUI/blob/main/app/src/analyticsEvents/listeners/AmplitudeListener.ts
+
+Liskov Substitution Principle:
+https://github.com/13IEZ/UUI/blob/main/loveship/components/pickers/DataPickerBody.tsx абстракция над https://github.com/13IEZ/UUI/blob/main/uui-components/src/pickers/PickerBodyBase.tsx
+которая потом используется во всех пикерах loveship является LSP
+
+Interface Seggregation Principle:
+думаю, что большинство их компонентов разделяют данный принцип, https://github.com/13IEZ/UUI/blob/main/uui-components/src/pickers/PickerBodyBase.tsx
+потому что потом у каждого есть свой скин который дополняет base
+
+Dependency Inversion Principle:
+реализация абстракции https://github.com/13IEZ/UUI/blob/main/loveship/components/pickers/DataPickerBody.tsx от которой зависят все остальные пикеры в loveship
+
+Violations of SOLID and Other Principles:
+Single Responsibility Principle:
+https://github.com/13IEZ/UUI/blob/develop/uui-core/data/processing/views/ArrayListView.ts думаю подходит под анти SRP 
+
+Open / Closed Principle:
+возможно https://github.com/13IEZ/UUI/blob/develop/uui-core/hooks/useUuiServices.ts ? при добавлении нового сервиса всегда нужно будет ходить сюда и дополнять его
+
+Liskov Substitution Principle:
+https://github.com/13IEZ/UUI/blob/develop/uui-components/src/navigation/Anchor.tsx метод render переопределен 
+
+Interface Seggregation Principle:
+Возможно сюда можно отнести https://github.com/13IEZ/UUI/blob/develop/uui-components/src/buttons/Button.tsx строчки с 7 по 10
+
+Dependency Inversion Principle: 
+https://github.com/13IEZ/UUI/blob/develop/uui-components/src/buttons/ButtonBase.tsx возможно можно отнести 4 строчку но наверное больше смущает, что на 11 строке мы экстендим
+этот интерфейс и у нас дженерик и после https://github.com/13IEZ/UUI/blob/develop/uui-components/src/navigation/Anchor.tsx мы дополняем еще 9 интерфейсами/типами на 9 строке и некоторые
+из них повторяются
